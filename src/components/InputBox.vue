@@ -2,11 +2,13 @@
 import { SendOutlined } from '@ant-design/icons-vue'
 import { Button, Input, Select } from 'ant-design-vue'
 import { computed, ref } from 'vue'
+import { defaultModel, defaultModels } from '~/config/models'
 import { useMessageStore } from '~/stores/message'
+import type { ModelType } from '~/types/model'
 
 const messageStore = useMessageStore()
 const newMessage = ref<string>('')
-const selectedModel = ref<string>('gpt-3.5')
+const selectedModel = ref<ModelType>(defaultModel)
 
 // 计算是否应该禁用输入
 const isInputDisabled = computed(() => messageStore.isGenerating)
@@ -51,7 +53,7 @@ const getPopupContainer = (trigger: HTMLElement) => trigger.parentNode as HTMLEl
 </script>
 
 <template>
-  <div class="flex flex-col bg-[#fffefb] px-2 py-2 md:px-4">
+  <div class="flex flex-col bg-[#fffefb] px-2 py-2 md:px-4 sm:px-3">
     <!-- Model Selector -->
     <div class="h-8 flex items-center">
       <a-config-provider :theme="{ token: { colorPrimary: '#00668c', borderRadius: '10px' } }">
@@ -63,11 +65,13 @@ const getPopupContainer = (trigger: HTMLElement) => trigger.parentNode as HTMLEl
           style="width: 100px; background-color: #f5f4f1;"
           :disabled="isInputDisabled"
         >
-          <a-select-option value="gpt-3.5">
-            3.5
-          </a-select-option>
-          <a-select-option value="gpt-4">
-            GPT-4
+          <a-select-option
+            v-for="model in defaultModels"
+            :key="model.value"
+            :value="model.value"
+            :disabled="model.disabled"
+          >
+            {{ model.label }}
           </a-select-option>
         </a-select>
       </a-config-provider>
@@ -85,7 +89,7 @@ const getPopupContainer = (trigger: HTMLElement) => trigger.parentNode as HTMLEl
           <a-textarea
             v-model:value="newMessage"
             :placeholder="isInputDisabled ? '等待回复中...' : '输入消息... (Shift + Enter 换行)'"
-            class="w-full resize-none border-none pr-12 text-base md:text-sm focus:shadow-none"
+            class="w-full resize-none border-none pr-12 text-sm focus:shadow-none"
             :auto-size="{ minRows: 1, maxRows: 6 }"
             :disabled="isInputDisabled"
             @keydown="handleKeydown"

@@ -27,7 +27,7 @@ function handleLogout() {
 
 <template>
   <nav class="nav-container">
-    <ul class="h-11 flex items-center justify-between px-4 md:justify-center md:gap-16">
+    <ul class="h-11 flex items-center justify-between px-2 lg:px-8 md:px-6 sm:px-4">
       <li>
         <a-tooltip
           placement="bottom"
@@ -301,8 +301,19 @@ nav {
   font-size: 16px;
 }
 
-/* 移动端样式调整 */
-@media (max-width: 768px) {
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .nav-item {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  .nav-item .anticon {
+    font-size: 1.125rem !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
   .nav-item {
     height: 2.25rem;
     width: 2.25rem;
@@ -310,12 +321,6 @@ nav {
 
   .nav-item .anticon {
     font-size: 1.25rem !important;
-  }
-
-  .nav-container,
-  .nav-container::before,
-  .nav-container::after {
-    border-radius: 0 0 0.5rem 0.5rem;
   }
 }
 </style>

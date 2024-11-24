@@ -2,8 +2,11 @@ import type { Router } from 'vue-router'
 import { message } from 'ant-design-vue'
 import axios from 'axios'
 
+// 获取环境变量
+const apiUrl = import.meta.env.VITE_CHATAI_API_URL
+
 const request = axios.create({
-  baseURL: 'http://localhost:8081/api',
+  baseURL: `${apiUrl}`,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -16,7 +19,7 @@ export function setupRequest(router: Router) {
     (config) => {
       const token = localStorage.getItem('token')
       if (token) {
-        config.headers.Authorization = token
+        config.headers.Authorization = `Bearer ${token}`
       }
       return config
     },

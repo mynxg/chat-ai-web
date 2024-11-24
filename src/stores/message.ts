@@ -1,6 +1,9 @@
 import type { Message } from './types'
 import { defineStore } from 'pinia'
 
+// 获取环境变量
+const apiUrl = import.meta.env.VITE_CHATAI_API_URL
+
 export const useMessageStore = defineStore('message', {
   state: () => ({
     messages: [] as Message[],
@@ -23,11 +26,11 @@ export const useMessageStore = defineStore('message', {
     async generateResponse(userMessage: string, model: string) {
       this.setGenerating(true)
       try {
-        const response = await fetch('http://localhost:8081/api/v1/chatglm/chat/completions', {
+        const response = await fetch(`${apiUrl}/v1/chatglm/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token') || '',
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
           },
           body: JSON.stringify({
             messages: [

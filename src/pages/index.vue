@@ -26,14 +26,14 @@ provide('currentPage', currentPage)
   <div class="fixed inset-0 flex flex-col overflow-hidden">
     <!-- 顶部导航栏 -->
     <div class="flex flex-none justify-center">
-      <div class="w-full px-4 md:w-2/5 md:px-0">
+      <div class="w-full px-4 lg:w-2/3 md:w-3/4 sm:w-4/5 xl:w-2/5">
         <TheSiderBar />
       </div>
     </div>
 
     <!-- 中间内容区域 -->
     <div class="min-h-0 flex flex-1 justify-center">
-      <div class="h-full w-full px-4 md:w-2/5 md:px-0">
+      <div class="h-full w-full px-4 lg:w-2/3 md:w-3/4 sm:w-4/5 xl:w-2/5">
         <Transition name="fade" mode="out-in">
           <component
             :is="currentPage === 'chat'
@@ -50,7 +50,7 @@ provide('currentPage', currentPage)
 
     <!-- 底部输入框 -->
     <div v-if="currentPage === 'chat'" class="flex flex-none justify-center">
-      <div class="w-full px-4 md:w-2/5 md:px-0">
+      <div class="w-full px-4 lg:w-2/3 md:w-3/4 sm:w-4/5 xl:w-2/5">
         <InputBox />
       </div>
     </div>
