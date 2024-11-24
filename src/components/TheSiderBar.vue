@@ -1,25 +1,33 @@
 <script setup lang="ts">
 import {
   GiftOutlined,
+  LogoutOutlined,
   MessageOutlined,
   RobotOutlined,
   ShoppingOutlined,
+  UserOutlined,
 } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 import { inject, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-const showOrder = ref(false)
-const toggleView = inject('toggleView') as (show: boolean) => void
+const router = useRouter()
 const currentPage = inject('currentPage', ref('chat'))
 
 function switchTab(tab: string) {
   currentPage.value = tab
-  toggleView(tab as 'chat' | 'bot' | 'order' | 'gift')
+}
+
+function handleLogout() {
+  localStorage.removeItem('token')
+  message.success('已退出登录')
+  router.push('/guide')
 }
 </script>
 
 <template>
   <nav class="nav-container">
-    <ul class="h-11 flex items-center justify-around px-4 md:px-8">
+    <ul class="h-11 flex items-center justify-between px-4 md:justify-center md:gap-16">
       <li>
         <a-tooltip
           placement="bottom"
@@ -31,7 +39,7 @@ function switchTab(tab: string) {
           </template>
           <a
             class="nav-item"
-            :class="{ 'nav-item-active': currentPage.value === 'chat' }"
+            :class="{ 'nav-item-active': currentPage === 'chat' }"
             @click="switchTab('chat')"
           >
             <MessageOutlined class="text-xl" />
@@ -49,7 +57,7 @@ function switchTab(tab: string) {
           </template>
           <a
             class="nav-item"
-            :class="{ 'nav-item-active': currentPage.value === 'bot' }"
+            :class="{ 'nav-item-active': currentPage === 'bot' }"
             @click="switchTab('bot')"
           >
             <RobotOutlined class="text-xl" />
@@ -67,7 +75,7 @@ function switchTab(tab: string) {
           </template>
           <a
             class="nav-item"
-            :class="{ 'nav-item-active': currentPage.value === 'order' }"
+            :class="{ 'nav-item-active': currentPage === 'order' }"
             @click="switchTab('order')"
           >
             <ShoppingOutlined class="text-xl" />
@@ -85,12 +93,36 @@ function switchTab(tab: string) {
           </template>
           <a
             class="nav-item"
-            :class="{ 'nav-item-active': currentPage.value === 'gift' }"
+            :class="{ 'nav-item-active': currentPage === 'gift' }"
             @click="switchTab('gift')"
           >
             <GiftOutlined class="text-xl" />
           </a>
         </a-tooltip>
+      </li>
+      <li>
+        <a-dropdown
+          :trigger="['hover']"
+          placement="bottomCenter"
+          overlay-class-name="user-dropdown"
+        >
+          <a
+            class="nav-item"
+            :class="{ 'nav-item-active': currentPage === 'user' }"
+          >
+            <UserOutlined class="text-xl" />
+          </a>
+          <template #overlay>
+            <a-menu @click="handleLogout">
+              <a-menu-item key="logout" class="text-red-500">
+                <template #icon>
+                  <LogoutOutlined />
+                </template>
+                退出登录
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </li>
     </ul>
   </nav>
@@ -111,14 +143,31 @@ function switchTab(tab: string) {
 }
 
 .nav-container {
-  @apply h-14 text-white;
+  @apply h-14 text-white relative;
   background-color: var(--primary-300);
-  border-radius: 0 0 0.5rem 0.5rem;
-  @screen md {
-    border-radius: 0 0 1rem 1rem;
-  }
+  border-radius: 0 0 1rem 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.nav-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--primary-300);
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 1rem 1rem;
+  z-index: -1;
+}
+
+.nav-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0 0 1rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: -2;
 }
 
 .nav-item {
@@ -187,19 +236,6 @@ nav {
   position: relative;
 }
 
-/* 添加玻璃拟态效果 */
-nav::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  backdrop-filter: blur(10px);
-  border-radius: 0 0 1rem 1rem;
-  z-index: -1;
-}
-
 :deep(.ant-tooltip) {
   --at-apply: text-sm;
 }
@@ -232,6 +268,54 @@ nav::before {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+:deep(.user-dropdown) {
+  min-width: 120px;
+  background-color: var(--bg-100);
+  border-radius: 8px;
+  box-shadow:
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+:deep(.user-dropdown .ant-dropdown-menu) {
+  padding: 4px;
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+:deep(.user-dropdown .ant-dropdown-menu-item) {
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+:deep(.user-dropdown .ant-dropdown-menu-item:hover) {
+  background-color: rgba(255, 77, 79, 0.1);
+}
+
+:deep(.user-dropdown .ant-dropdown-menu-item .anticon) {
+  font-size: 16px;
+}
+
+/* 移动端样式调整 */
+@media (max-width: 768px) {
+  .nav-item {
+    height: 2.25rem;
+    width: 2.25rem;
+  }
+
+  .nav-item .anticon {
+    font-size: 1.25rem !important;
+  }
+
+  .nav-container,
+  .nav-container::before,
+  .nav-container::after {
+    border-radius: 0 0 0.5rem 0.5rem;
   }
 }
 </style>

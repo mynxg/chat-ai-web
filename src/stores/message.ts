@@ -23,10 +23,57 @@ export const useMessageStore = defineStore('message', {
     async generateResponse(userMessage: string, model: string) {
       this.setGenerating(true)
       try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        const response = await fetch('http://localhost:8081/api/v1/chatglm/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('token') || '',
+          },
+          body: JSON.stringify({
+            messages: [
+              {
+                content: userMessage,
+                role: 'user',
+              },
+            ],
+            model,
+          }),
+        })
 
+        if (!response.ok)
+          throw new Error('Network response was not ok')
+
+        const reader = response.body?.getReader()
+        if (!reader)
+          throw new Error('No reader available')
+
+        let accumulatedMessage = ''
+
+        // 创建一个新的消息对象用于累积内容
         this.addMessage({
-          text: `模拟AI回复: ${userMessage}`,
+          text: '',
+          type: 'received',
+          model,
+          avatar: 'https://via.placeholder.com/32',
+        })
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done)
+            break
+
+          // 解码收到的数据
+          const text = new TextDecoder().decode(value)
+          accumulatedMessage += text
+
+          // 更新最后一条消息的内容
+          this.messages[this.messages.length - 1].text = accumulatedMessage
+        }
+      }
+      catch (error) {
+        console.error('Error:', error)
+        this.addMessage({
+          text: '抱歉，发生了错误，请重试',
           type: 'received',
           model,
           avatar: 'https://via.placeholder.com/32',
