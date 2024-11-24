@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { Message } from './types'
 import { CopyOutlined, DownOutlined, ReloadOutlined } from '@ant-design/icons-vue'
-import { Button, message, Tooltip } from 'ant-design-vue'
+import { message } from 'ant-design-vue'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useMessageStore } from '~/stores/message'
+import MarkdownRenderer from './MarkdownRenderer.vue'
 
 const messageStore = useMessageStore()
 const messagesContainer = ref<HTMLElement | null>(null)
@@ -103,14 +104,23 @@ onMounted(() => {
                 class="h-8 w-8 rounded-full"
               >
               <div
-                class="max-w-[80%] px-3 py-2 text-left"
-                :class="msg.type === 'sent' ? 'bg-[#f5f4f1] rounded-lg shadow-sm' : ''"
+                class="px-3 py-2 text-left text-sm"
+                :class="[
+                  msg.type === 'sent'
+                    ? 'bg-[#f5f4f1] rounded-lg shadow-sm inline-block'
+                    : 'w-full',
+                ]"
               >
                 <div
-                  class="break-words"
+                  class="break-words text-sm"
                   :class="msg.type === 'sent' ? 'text-[#1d1c1c]' : 'text-[#1d1c1c]'"
                 >
-                  {{ msg.text }}
+                  <template v-if="msg.type === 'received'">
+                    <MarkdownRenderer :content="msg.text" />
+                  </template>
+                  <template v-else>
+                    {{ msg.text }}
+                  </template>
                 </div>
                 <div
                   v-if="msg.type === 'received'"
@@ -147,9 +157,9 @@ onMounted(() => {
         </div>
 
         <div v-if="isLoading" class="message-item message-received animate-fade-in">
-          <div class="mb-1 px-2 text-left text-xs text-[#313d44] opacity-75">
+          <!-- <div class="mb-1 px-2 text-left text-xs text-[#313d44] opacity-75">
             Assistant
-          </div>
+          </div> -->
           <div class="relative">
             <div class="flex items-start justify-start gap-2">
               <div class="max-w-[80%] p-3">
@@ -205,7 +215,7 @@ onMounted(() => {
 }
 
 .message-received {
-  @apply flex flex-col items-start;
+  @apply flex flex-col items-start w-full;
 }
 
 .animate-fade-in {
@@ -255,5 +265,14 @@ onMounted(() => {
 
 .message-bubble-received {
   @apply bg-transparent;
+}
+
+:root {
+  --message-font-size: 14px;
+}
+
+.message-sent,
+.message-received {
+  font-size: var(--message-font-size);
 }
 </style>

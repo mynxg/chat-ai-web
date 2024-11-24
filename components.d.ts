@@ -11,6 +11,7 @@ declare module 'vue' {
     DialogBox: typeof import('./src/components/DialogBox.vue')['default']
     InputBox: typeof import('./src/components/InputBox.vue')['default']
     LuckyDraw: typeof import('./src/components/LuckyDraw.vue')['default']
+    MarkdownRenderer: typeof import('./src/components/MarkdownRenderer.vue')['default']
     OrderPage: typeof import('./src/components/OrderPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
