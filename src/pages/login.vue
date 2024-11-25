@@ -31,13 +31,14 @@ async function handleLogin() {
       },
     })
 
-    if (response.data.code === '0000') {
-      localStorage.setItem('token', response.data.data)
+    const responseData = response.data as LoginResponse
+    if (responseData.code === '0000') {
+      localStorage.setItem('token', responseData.data)
       message.success('登录成功')
       router.push('/')
     }
     else {
-      message.error(response.data.info || '登录失败')
+      message.error(responseData.info || '登录失败')
     }
   }
   catch (error: any) {
