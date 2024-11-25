@@ -31,7 +31,7 @@ export function setupRequest(router: Router) {
   // 响应拦截器
   request.interceptors.response.use(
     (response) => {
-      return response.data
+      return response
     },
     (error) => {
       if (error.response?.status === 401) {

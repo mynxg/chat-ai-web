@@ -27,7 +27,7 @@ function handleLogout() {
 
 <template>
   <nav class="nav-container">
-    <ul class="h-11 flex items-center justify-between px-2 lg:px-8 md:px-6 sm:px-4">
+    <ul class="h-11 flex items-center justify-between px-4 md:px-8">
       <li>
         <a-tooltip
           placement="bottom"
@@ -103,7 +103,7 @@ function handleLogout() {
       <li>
         <a-dropdown
           :trigger="['hover']"
-          placement="bottomCenter"
+          placement="bottom"
           overlay-class-name="user-dropdown"
         >
           <a

@@ -5,15 +5,16 @@ import DialogBox from '~/components/DialogBox.vue'
 import InputBox from '~/components/InputBox.vue'
 import LuckyDraw from '~/components/LuckyDraw.vue'
 import OrderPage from '~/components/OrderPage.vue'
+import UserPage from '~/components/UserPage.vue'
 
 defineOptions({
   name: 'IndexPage',
 })
 
 const showOrder = ref(false)
-const currentPage = ref<'chat' | 'bot' | 'order' | 'gift'>('chat')
+const currentPage = ref<'chat' | 'bot' | 'order' | 'gift' | 'user'>('chat')
 
-function toggleView(page: 'chat' | 'bot' | 'order' | 'gift') {
+function toggleView(page: 'chat' | 'bot' | 'order' | 'gift' | 'user') {
   currentPage.value = page
   showOrder.value = page === 'order'
 }
@@ -42,7 +43,9 @@ provide('currentPage', currentPage)
                 ? OrderPage
                 : currentPage === 'bot'
                   ? BotAssistant
-                  : LuckyDraw"
+                  : currentPage === 'user'
+                    ? UserPage
+                    : LuckyDraw"
           />
         </Transition>
       </div>
