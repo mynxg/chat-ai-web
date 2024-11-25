@@ -31,10 +31,15 @@ export function setupRequest(router: Router) {
   // 响应拦截器
   request.interceptors.response.use(
     (response) => {
+      if (response.data.code === '500') {
+        localStorage.removeItem('token')
+        router.push('/login')
+        message.info('登录已过期，请重新登录')
+      }
       return response
     },
     (error) => {
-      if (error.response?.status === 401) {
+      if (error.response?.status !== 200) {
         localStorage.removeItem('token')
         router.push('/login')
         message.error('登录已过期，请重新登录')

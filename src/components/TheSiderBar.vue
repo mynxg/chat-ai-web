@@ -7,7 +7,7 @@ import {
   ShoppingOutlined,
   UserOutlined,
 } from '@ant-design/icons-vue'
-import { message } from 'ant-design-vue'
+import { message, Modal } from 'ant-design-vue'
 import { inject, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -19,9 +19,20 @@ function switchTab(tab: string) {
 }
 
 function handleLogout() {
-  localStorage.removeItem('token')
-  message.success('已退出登录')
-  router.push('/guide')
+  Modal.confirm({
+    title: '确认退出',
+    content: '确定要退出登录吗？',
+    okText: '确认',
+    cancelText: '取消',
+    okButtonProps: {
+      class: 'bg-[#00668c] hover:bg-[#71c4ef]',
+    },
+    onOk() {
+      localStorage.removeItem('token')
+      message.success('已退出登录')
+      router.push('/guide')
+    },
+  })
 }
 </script>
 
@@ -323,5 +334,28 @@ nav {
   .nav-item .anticon {
     font-size: 1.25rem !important;
   }
+}
+
+:deep(.ant-modal-content) {
+  border-radius: 8px;
+}
+
+:deep(.ant-modal-header) {
+  border-bottom: none;
+  padding: 16px 16px 0;
+}
+
+:deep(.ant-modal-body) {
+  padding: 16px;
+  color: #666;
+}
+
+:deep(.ant-modal-footer) {
+  border-top: none;
+  padding: 0 16px 16px;
+}
+
+:deep(.ant-btn-primary) {
+  border: none;
 }
 </style>
