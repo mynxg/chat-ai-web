@@ -109,6 +109,7 @@ function handleLogout() {
           <a
             class="nav-item"
             :class="{ 'nav-item-active': currentPage === 'user' }"
+            @click="switchTab('user')"
           >
             <UserOutlined class="text-xl" />
           </a>

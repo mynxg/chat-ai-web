@@ -6,8 +6,7 @@ import { useRequest } from '~/utils/request'
 
 interface UserQuota {
   totalQuota: number
-  usedQuota: number
-  remainQuota: number
+  surplusQuota: number
 }
 
 interface QuotaResponse {
@@ -20,15 +19,14 @@ const request = useRequest()
 const loading = ref(false)
 const userQuota = ref<UserQuota>({
   totalQuota: 0,
-  usedQuota: 0,
-  remainQuota: 0,
+  surplusQuota: 0,
 })
 
 // 获取用户额度信息
 async function fetchUserQuota() {
   loading.value = true
   try {
-    const response = await request.get<QuotaResponse>('/v1/user/query_quota')
+    const response = await request.post<QuotaResponse>('v1/account/query_account_quota')
     if (response.data.code === '0000') {
       userQuota.value = response.data.data
     }
@@ -79,11 +77,11 @@ onMounted(() => {
             </div>
             <div class="flex flex-col items-center justify-center rounded-lg bg-[#f5f4f1] p-4">
               <span class="text-xs text-[#666]">已使用</span>
-              <span class="mt-1 text-lg text-[#313d44] font-medium">{{ userQuota.usedQuota }}</span>
+              <span class="mt-1 text-lg text-[#313d44] font-medium">{{ userQuota.totalQuota - userQuota.surplusQuota }}</span>
             </div>
             <div class="flex flex-col items-center justify-center rounded-lg bg-[#f5f4f1] p-4">
               <span class="text-xs text-[#666]">剩余</span>
-              <span class="mt-1 text-lg text-[#00668c] font-medium">{{ userQuota.remainQuota }}</span>
+              <span class="mt-1 text-lg text-[#00668c] font-medium">{{ userQuota.surplusQuota }}</span>
             </div>
           </div>
 
@@ -91,10 +89,10 @@ onMounted(() => {
           <div class="mt-4">
             <div class="mb-1 flex items-center justify-between text-xs">
               <span class="text-[#666]">使用进度</span>
-              <span class="text-[#00668c]">{{ Math.round((userQuota.usedQuota / userQuota.totalQuota) * 100) }}%</span>
+              <span class="text-[#00668c]">{{ Math.round(((userQuota.totalQuota - userQuota.surplusQuota) / userQuota.totalQuota) * 100) }}%</span>
             </div>
             <a-progress
-              :percent="(userQuota.usedQuota / userQuota.totalQuota) * 100"
+              :percent="((userQuota.totalQuota - userQuota.surplusQuota) / userQuota.totalQuota) * 100"
               :show-info="false"
               :stroke-color="{
                 '0%': '#71c4ef',
