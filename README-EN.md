@@ -73,6 +73,7 @@ Once deployed, you can access your application using the domain provided by Verc
 Demo
 
 <details><summary><a>👉Show More</a></summary></br>
+
 ![image-20241129214706634](./assets/image-20241129214706634.png)
 
 ![image-20241129214722777](./assets/image-20241129214722777.png)

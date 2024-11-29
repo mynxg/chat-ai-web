@@ -74,6 +74,7 @@ VITE_CHATAI_API_URL：设置为你的 API 地址，例如 https://your-api-url.c
 ## 效果展示
 
 <details><summary><a>👉显示更多</a></summary></br>
+
 ![image-20241129214706634](./assets/image-20241129214706634.png)
 
 ![image-20241129214722777](./assets/image-20241129214722777.png)
